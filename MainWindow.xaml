@@ -1,0 +1,569 @@
+<Window x:Class="Umbra.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        xmlns:lang="clr-namespace:Umbra.Lang"
+        Title="Umbra"
+        Width="920" Height="650"
+        MinWidth="750" MinHeight="500"
+        WindowStartupLocation="CenterScreen"
+        FlowDirection="{Binding Source={x:Static lang:TranslationSource.Instance}, Path=Direction}"
+        WindowStyle="None"
+        Background="#0A0A0A"
+        ResizeMode="CanResize"
+        FontFamily="B Nazanin"
+        x:Name="ThisWindow">
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="0" CornerRadius="0" ResizeBorderThickness="5" CaptionHeight="0" UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <DropShadowEffect x:Key="Shadow" BlurRadius="20" ShadowDepth="4" Opacity="0.4" Color="#000" />
+        <QuadraticEase x:Key="EaseOut" EasingMode="EaseOut" />
+        <BackEase x:Key="BackOut" EasingMode="EaseOut" Amplitude="0.3" />
+
+        <Style x:Key="TitleBtn" TargetType="Button">
+            <Setter Property="Width" Value="46" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#666" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#25FFFFFF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CloseBtn" TargetType="Button" BasedOn="{StaticResource TitleBtn}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E81123" />
+                    <Setter Property="Foreground" Value="White" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="NeonBtn" TargetType="Button">
+            <Setter Property="Height" Value="34" />
+            <Setter Property="MinWidth" Value="76" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="outer" CornerRadius="7" Background="#111"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1.5"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform>
+                                <ScaleTransform x:Name="scl" ScaleX="1" ScaleY="1" />
+                            </Border.RenderTransform>
+                            <Grid>
+                                <Border x:Name="glow" CornerRadius="7" Opacity="0" Background="{TemplateBinding BorderBrush}" />
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Grid>
+                            <Border.Triggers>
+                                <EventTrigger RoutedEvent="MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="scl" Storyboard.TargetProperty="ScaleX" To="1.04" Duration="0:0:0.12" EasingFunction="{StaticResource BackOut}" />
+                                            <DoubleAnimation Storyboard.TargetName="scl" Storyboard.TargetProperty="ScaleY" To="1.04" Duration="0:0:0.12" EasingFunction="{StaticResource BackOut}" />
+                                            <DoubleAnimation Storyboard.TargetName="glow" Storyboard.TargetProperty="Opacity" To="0.15" Duration="0:0:0.15" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="scl" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.2" />
+                                            <DoubleAnimation Storyboard.TargetName="scl" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.2" />
+                                            <DoubleAnimation Storyboard.TargetName="glow" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.25" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="PreviewMouseDown">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="scl" Storyboard.TargetProperty="ScaleX" To="0.95" Duration="0:0:0.06" />
+                                            <DoubleAnimation Storyboard.TargetName="scl" Storyboard.TargetProperty="ScaleY" To="0.95" Duration="0:0:0.06" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Border.Triggers>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernItem" TargetType="ListBoxItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Margin" Value="0,2" />
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="MinHeight" Value="44" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="bd" CornerRadius="7" Background="#111"
+                                BorderBrush="Transparent" BorderThickness="1" Margin="2,1">
+                            <Border.RenderTransform>
+                                <TranslateTransform x:Name="slide" X="25" />
+                            </Border.RenderTransform>
+                            <ContentPresenter Margin="{TemplateBinding Padding}" />
+                            <Border.Triggers>
+                                <EventTrigger RoutedEvent="Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="slide" Storyboard.TargetProperty="X" From="25" To="0" Duration="0:0:0.2" EasingFunction="{StaticResource EaseOut}" />
+                                            <DoubleAnimation Storyboard.TargetName="bd" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.2" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Border.Triggers>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#1A1A1A" />
+                                <Setter TargetName="bd" Property="BorderBrush" Value="#00D4FF" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#0D1A2A" />
+                                <Setter TargetName="bd" Property="BorderBrush" Value="#00D4FF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <!-- Title Bar -->
+        <Border x:Name="TitleBar" Height="34" VerticalAlignment="Top" Background="#0A0A0A"
+                BorderBrush="#1A1A1A" BorderThickness="0,0,0,1"
+                MouseLeftButtonDown="TitleBar_MouseDown">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="🌘" FontSize="13" VerticalAlignment="Center" Margin="10,0,4,0" />
+                <TextBlock Grid.Column="1" Text="UMBRA" Foreground="#00D4FF" FontSize="13" FontWeight="Bold" VerticalAlignment="Center" />
+                <Button Grid.Column="3" Style="{StaticResource TitleBtn}" x:Name="BtnMinimize" Content="&#xE921;" Click="BtnMinimize_Click" />
+                <Button Grid.Column="4" Style="{StaticResource CloseBtn}" x:Name="BtnClose" Content="&#xE8BB;" Click="BtnClose_Click" />
+            </Grid>
+        </Border>
+
+        <Grid Margin="24,44,24,4" DataContext="{Binding Source={x:Static lang:TranslationSource.Instance}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Grid Grid.Row="0" Margin="0,0,0,2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="3" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Text="{Binding HeaderText}" FontSize="12" Foreground="#666" />
+                <Border Grid.Row="1" Height="2" Margin="0,8,0,0" CornerRadius="1">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#00D4FF" Offset="0" />
+                            <GradientStop Color="#A855F7" Offset="0.6" />
+                            <GradientStop Color="#EC4899" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+            </Grid>
+
+            <!-- Stats -->
+            <Grid Grid.Row="1" Margin="0,6,0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" CornerRadius="7" Background="#111" BorderBrush="#1A1A1A" BorderThickness="1" Padding="14,8">
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Width="32" Height="32" CornerRadius="7" Background="#20A855F7" VerticalAlignment="Center">
+                            <TextBlock Text="📦" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
+                            <TextBlock x:Name="TxtTotalItems" Text="0" FontSize="18" FontWeight="Bold" Foreground="#A855F7" />
+                            <TextBlock Text="{Binding StatItems}" FontSize="9" Foreground="#666" Margin="0,1,0,0" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border Grid.Column="2" CornerRadius="7" Background="#111" BorderBrush="#1A1A1A" BorderThickness="1" Padding="14,8">
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Width="32" Height="32" CornerRadius="7" Background="#2000D4FF" VerticalAlignment="Center">
+                            <TextBlock Text="🙈" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
+                            <TextBlock x:Name="TxtHiddenItems" Text="0" FontSize="18" FontWeight="Bold" Foreground="#00D4FF" />
+                            <TextBlock Text="{Binding StatHidden}" FontSize="9" Foreground="#666" Margin="0,1,0,0" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border Grid.Column="4" CornerRadius="7" Background="#111" BorderBrush="#1A1A1A" BorderThickness="1" Padding="14,8">
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Width="32" Height="32" CornerRadius="7" Background="#20EF4444" VerticalAlignment="Center">
+                            <TextBlock Text="🗑" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
+                            <TextBlock x:Name="TxtTotalSize" Text="۰ B" FontSize="18" FontWeight="Bold" Foreground="#EF4444" />
+                            <TextBlock Text="{Binding StatTotalSize}" FontSize="9" Foreground="#666" Margin="0,1,0,0" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border Grid.Column="6" Width="34" Height="34" CornerRadius="17"
+                        Background="#111" BorderBrush="#1A1A1A" BorderThickness="1"
+                        Cursor="Hand" MouseLeftButtonDown="BtnSettings_Click">
+                    <TextBlock Text="⚙" FontSize="15" Foreground="#666"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <Border.Triggers>
+                        <EventTrigger RoutedEvent="MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetProperty="Background.Color" To="#1A1A1A" Duration="0:0:0.12" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetProperty="Background.Color" To="#111" Duration="0:0:0.2" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Border.Triggers>
+                </Border>
+            </Grid>
+
+            <!-- Toolbar -->
+            <WrapPanel Grid.Row="2" Margin="0,2,0,4">
+                <Button Style="{StaticResource NeonBtn}" x:Name="BtnAddFile" BorderBrush="#00D4FF" Foreground="#00D4FF" Content="{Binding BtnAddFile}" Click="BtnAddFile_Click" />
+                <Button Style="{StaticResource NeonBtn}" x:Name="BtnAddFolder" BorderBrush="#00D4FF" Foreground="#00D4FF" Content="{Binding BtnAddFolder}" Margin="4,0,0,0" Click="BtnAddFolder_Click" />
+                <Button Style="{StaticResource NeonBtn}" x:Name="BtnScan" BorderBrush="#6366F1" Foreground="#6366F1" Content="{Binding BtnScan}" Margin="4,0,0,0" Click="BtnScan_Click" />
+                <Button Style="{StaticResource NeonBtn}" x:Name="BtnHide" BorderBrush="#22C55E" Foreground="#22C55E" Content="{Binding BtnHide}" Margin="4,0,0,0" Click="BtnHide_Click" ToolTip="Ctrl+H" />
+                <Button Style="{StaticResource NeonBtn}" x:Name="BtnSuperHide" BorderBrush="#F97316" Foreground="#F97316" Content="{Binding BtnSuperHide}" Margin="4,0,0,0" Click="BtnSuperHide_Click" ToolTip="Ctrl+Shift+H" />
+                <Button Style="{StaticResource NeonBtn}" x:Name="BtnUnhide" BorderBrush="#EF4444" Foreground="#EF4444" Content="{Binding BtnUnhide}" Margin="4,0,0,0" Click="BtnUnhide_Click" ToolTip="Ctrl+U" />
+                <Button Style="{StaticResource NeonBtn}" x:Name="BtnRemove" BorderBrush="#A855F7" Foreground="#A855F7" Content="{Binding BtnRemove}" Margin="4,0,0,0" Click="BtnRemove_Click" ToolTip="Delete" />
+                <Button Style="{StaticResource NeonBtn}" x:Name="BtnRefresh" BorderBrush="#14B8A6" Foreground="#14B8A6" Content="{Binding BtnRefresh}" Margin="4,0,0,0" Click="BtnRefresh_Click" />
+            </WrapPanel>
+
+            <!-- Search -->
+            <Border Grid.Row="3" CornerRadius="6" Background="#0D0D0D" BorderBrush="#1A1A1A" BorderThickness="1" Margin="0,0,0,4" Padding="8,4">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="SearchBox" Background="Transparent" BorderThickness="0"
+                             Foreground="#CCC" FontSize="11"
+                             TextChanged="SearchBox_TextChanged"
+                             Padding="4,2" />
+                    <TextBlock Grid.Column="0" x:Name="SearchHint" Text="{Binding SearchHint}" FontSize="11" Foreground="#444" Margin="4,2,0,0" IsHitTestVisible="False" />
+                    <Button Grid.Column="1" x:Name="BtnClearSearch" Content="✕" Width="24" Height="24"
+                            Background="Transparent" Foreground="#555" Cursor="Hand"
+                            FontSize="10" BorderThickness="0" Click="BtnClearSearch_Click" Visibility="Hidden" />
+                </Grid>
+            </Border>
+
+            <!-- List -->
+            <Border Grid.Row="4" CornerRadius="7" Background="#0D0D0D" BorderBrush="#1A1A1A" BorderThickness="1">
+                <Grid>
+                    <Border x:Name="EmptyState" VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.35">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="📂" FontSize="32" HorizontalAlignment="Center" />
+                            <TextBlock Text="{Binding EmptyTitle}" FontSize="13" FontWeight="SemiBold" Foreground="#555" HorizontalAlignment="Center" Margin="0,6,0,0" />
+                            <TextBlock Text="{Binding EmptyDesc}" FontSize="10" Foreground="#444" HorizontalAlignment="Center" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Border>
+
+                    <ListBox x:Name="ItemList" Background="Transparent" BorderThickness="0"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             SelectionMode="Extended"
+                             ItemContainerStyle="{StaticResource ModernItem}"
+                             KeyDown="ItemList_KeyDown">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" VerticalAlignment="Center" Margin="3,0,6,0" />
+                                    <Border Grid.Column="1" Width="30" Height="30" CornerRadius="6"
+                                            Background="{Binding IconBg}" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Icon}" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
+                                    <StackPanel Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding DisplayName}" FontSize="12" FontWeight="SemiBold" Foreground="#CCC" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding DisplayPath}" FontSize="9" Foreground="#555" TextTrimming="CharacterEllipsis" Margin="0,1,0,0" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="3" Text="{Binding SizeText}" FontSize="10" Foreground="#555" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                    <Border Grid.Column="4" CornerRadius="4" Padding="7,2" Background="{Binding BadgeBg}" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding StatusText}" FontSize="9" FontWeight="Bold" Foreground="{Binding BadgeText}" />
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+
+            <!-- Status -->
+            <Border Grid.Row="5" Margin="0,4,0,0" Padding="6,2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" x:Name="TxtStatus" Text="{Binding StatusReady}" FontSize="10" Foreground="#555" />
+                    <TextBlock Grid.Column="2" x:Name="TxtItemCount" Text="۰" FontSize="10" Foreground="#444" />
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Bottom Credit -->
+        <Border Height="22" VerticalAlignment="Bottom" Background="#0D0D0D" BorderBrush="#1A1A1A" BorderThickness="0,1,0,0">
+            <TextBlock Text="{Binding MadeBy}" FontSize="9" Foreground="#00D4FF" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7" />
+        </Border>
+
+        <!-- Settings Panel -->
+        <Border x:Name="SettingsPanel" Width="260" HorizontalAlignment="Right"
+                Background="#0D0D0D" BorderBrush="#1A1A1A" BorderThickness="1,0,0,0"
+                Margin="260,0,0,0" Visibility="Hidden" IsHitTestVisible="True"
+                Effect="{StaticResource Shadow}"
+                DataContext="{Binding Source={x:Static lang:TranslationSource.Instance}}">
+            <Grid Margin="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding SettingsTitle}" FontSize="14" FontWeight="Bold" Foreground="#CCC" />
+                    <Button Grid.Column="1" x:Name="BtnCloseSettings" Content="✕" Width="26" Height="26"
+                            Background="Transparent" Foreground="#666" Cursor="Hand"
+                            FontSize="12" BorderThickness="0" Click="BtnCloseSettings_Click" />
+                </Grid>
+                <Border Grid.Row="1" Height="1" Background="#1A1A1A" Margin="0,6,0,10" />
+                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <TextBlock Text="{Binding SettingsShortcuts}" FontSize="12" FontWeight="SemiBold" Foreground="#888" Margin="0,0,0,6" />
+                        <TextBlock Text="{Binding ShortcutSelectAll}" FontSize="10" Foreground="#555" />
+                        <TextBlock Text="{Binding ShortcutHide}" FontSize="10" Foreground="#555" Margin="0,3,0,0" />
+                        <TextBlock Text="{Binding ShortcutSuperHide}" FontSize="10" Foreground="#555" Margin="0,3,0,0" />
+                        <TextBlock Text="{Binding ShortcutUnhide}" FontSize="10" Foreground="#555" Margin="0,3,0,0" />
+                        <TextBlock Text="{Binding ShortcutDelete}" FontSize="10" Foreground="#555" Margin="0,3,0,0" />
+                        <TextBlock Text="{Binding ShortcutSave}" FontSize="10" Foreground="#555" Margin="0,3,0,0" />
+                        <TextBlock Text="{Binding ShortcutOpen}" FontSize="10" Foreground="#555" Margin="0,3,0,0" />
+                        <TextBlock Text="{Binding ShortcutRefresh}" FontSize="10" Foreground="#555" Margin="0,3,0,0" />
+
+                        <Border Height="1" Background="#1A1A1A" Margin="0,12" />
+
+                        <TextBlock Text="{Binding SettingsStats}" FontSize="12" FontWeight="SemiBold" Foreground="#888" Margin="0,0,0,6" />
+                        <Border CornerRadius="6" Background="#0A0A0A" BorderBrush="#1A1A1A" BorderThickness="1" Padding="10,6">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                    <TextBlock x:Name="SettingsStatTotal" Text="0" FontSize="16" FontWeight="Bold" Foreground="#A855F7" HorizontalAlignment="Center" />
+                                    <TextBlock x:Name="SettingsStatTotalLabel" FontSize="8" Foreground="#555" HorizontalAlignment="Center" Margin="0,1,0,0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                    <TextBlock x:Name="SettingsStatHidden" Text="0" FontSize="16" FontWeight="Bold" Foreground="#00D4FF" HorizontalAlignment="Center" />
+                                    <TextBlock x:Name="SettingsStatHiddenLabel" FontSize="8" Foreground="#555" HorizontalAlignment="Center" Margin="0,1,0,0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                    <TextBlock x:Name="SettingsStatVisible" Text="0" FontSize="16" FontWeight="Bold" Foreground="#22C55E" HorizontalAlignment="Center" />
+                                    <TextBlock x:Name="SettingsStatVisibleLabel" FontSize="8" Foreground="#555" HorizontalAlignment="Center" Margin="0,1,0,0" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Height="1" Background="#1A1A1A" Margin="0,12" />
+
+                        <TextBlock Text="{Binding SettingsActions}" FontSize="12" FontWeight="SemiBold" Foreground="#888" Margin="0,0,0,6" />
+                        <WrapPanel>
+                            <Border CornerRadius="6" Background="#0A0A0A" BorderBrush="#6366F1" BorderThickness="1" Padding="6,4" Cursor="Hand" MouseLeftButtonDown="BtnSelectAllSettings_Click">
+                                <TextBlock Text="{Binding BtnSelectAll}" FontSize="10" Foreground="#6366F1" />
+                            </Border>
+                            <Border CornerRadius="6" Background="#0A0A0A" BorderBrush="#EF4444" BorderThickness="1" Padding="6,4" Cursor="Hand" Margin="4,0,0,0" MouseLeftButtonDown="BtnClearAll_Click">
+                                <TextBlock Text="{Binding BtnClearAll}" FontSize="10" Foreground="#EF4444" />
+                            </Border>
+                            <Border CornerRadius="6" Background="#0A0A0A" BorderBrush="#14B8A6" BorderThickness="1" Padding="6,4" Cursor="Hand" Margin="0,4,0,0" MouseLeftButtonDown="BtnExportList_Click">
+                                <TextBlock Text="{Binding BtnExportList}" FontSize="10" Foreground="#14B8A6" />
+                            </Border>
+                        </WrapPanel>
+
+                        <Border Height="1" Background="#1A1A1A" Margin="0,12" />
+
+                        <TextBlock Text="{Binding SettingsTips}" FontSize="12" FontWeight="SemiBold" Foreground="#888" Margin="0,0,0,6" />
+                        <Border CornerRadius="6" Background="#0A0A0A" BorderBrush="#1A1A1A" BorderThickness="1" Padding="8,5" Margin="0,0,0,3">
+                            <TextBlock Text="{Binding TipMulti}" FontSize="9" Foreground="#555" />
+                        </Border>
+                        <Border CornerRadius="6" Background="#0A0A0A" BorderBrush="#1A1A1A" BorderThickness="1" Padding="8,5" Margin="0,0,0,3">
+                            <TextBlock Text="{Binding TipSuper}" FontSize="9" Foreground="#F97316" />
+                        </Border>
+                        <Border CornerRadius="6" Background="#0A0A0A" BorderBrush="#1A1A1A" BorderThickness="1" Padding="8,5" Margin="0,0,0,3">
+                            <TextBlock Text="{Binding TipDrag}" FontSize="9" Foreground="#555" />
+                        </Border>
+                        <Border CornerRadius="6" Background="#0A0A0A" BorderBrush="#1A1A1A" BorderThickness="1" Padding="8,5">
+                            <TextBlock Text="{Binding TipScan}" FontSize="9" Foreground="#555" />
+                        </Border>
+
+                        <Border Height="1" Background="#1A1A1A" Margin="0,12" />
+
+                        <TextBlock Text="{Binding SettingsSaveLoad}" FontSize="12" FontWeight="SemiBold" Foreground="#888" Margin="0,0,0,6" />
+                        <TextBlock Text="{Binding SettingsSaveDesc1}" FontSize="10" Foreground="#555" />
+                        <TextBlock Text="{Binding SettingsSaveDesc2}" FontSize="10" Foreground="#555" Margin="0,2,0,0" />
+
+                        <Border Height="1" Background="#1A1A1A" Margin="0,12" />
+
+                        <TextBlock Text="{Binding SettingsLanguage}" FontSize="12" FontWeight="SemiBold" Foreground="#888" Margin="0,0,0,6" />
+                        <Border CornerRadius="8" Background="#0A0A0A" BorderBrush="#1A1A1A" BorderThickness="1" Padding="6,4" Cursor="Hand" MouseLeftButtonDown="LangToggle_Click">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="English" FontSize="11" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#555" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Lang}" Value="en">
+                                                    <Setter Property="Foreground" Value="#00D4FF" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Text=" / " FontSize="11" Foreground="#333" VerticalAlignment="Center" Margin="2,0" />
+                                <TextBlock Text="فارسی" FontSize="11" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#555" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Lang}" Value="fa">
+                                                    <Setter Property="Foreground" Value="#00D4FF" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Height="1" Background="#1A1A1A" Margin="0,12" />
+
+                        <TextBlock Text="{Binding SettingsAbout}" FontSize="12" FontWeight="SemiBold" Foreground="#888" Margin="0,0,0,6" />
+
+                        <!-- Logo preview in settings -->
+                        <Border CornerRadius="8" Background="#0A0A0A" BorderBrush="#1A1A1A" BorderThickness="1" Margin="0,0,0,8" Padding="16,10">
+                            <StackPanel HorizontalAlignment="Center">
+                                <Grid Width="44" Height="44" Margin="0,0,0,4">
+                                    <Path Fill="#00D4FF" Opacity="0.9">
+                                        <Path.Data>
+                                            <PathGeometry>
+                                                <PathFigure StartPoint="22,4" IsClosed="True">
+                                                    <ArcSegment Point="22,40" Size="20,20" SweepDirection="Counterclockwise" />
+                                                </PathFigure>
+                                            </PathGeometry>
+                                        </Path.Data>
+                                    </Path>
+                                    <Path Stroke="#00D4FF" StrokeThickness="2.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Opacity="0.5">
+                                        <Path.Data>
+                                            <PathGeometry>
+                                                <PathFigure StartPoint="24,8">
+                                                    <LineSegment Point="42,8" />
+                                                </PathFigure>
+                                                <PathFigure StartPoint="25,14">
+                                                    <LineSegment Point="45,14" />
+                                                </PathFigure>
+                                                <PathFigure StartPoint="26,20">
+                                                    <LineSegment Point="46,20" />
+                                                </PathFigure>
+                                                <PathFigure StartPoint="27,26">
+                                                    <LineSegment Point="44,26" />
+                                                </PathFigure>
+                                                <PathFigure StartPoint="26,32">
+                                                    <LineSegment Point="40,32" />
+                                                </PathFigure>
+                                                <PathFigure StartPoint="24,38">
+                                                    <LineSegment Point="34,38" />
+                                                </PathFigure>
+                                            </PathGeometry>
+                                        </Path.Data>
+                                    </Path>
+                                </Grid>
+                                <TextBlock Text="UMBRA" FontSize="13" FontWeight="Bold" Foreground="#00D4FF" HorizontalAlignment="Center" />
+                                <TextBlock Text="{Binding SettingsTagline}" FontSize="9" Foreground="#555" HorizontalAlignment="Center" Margin="0,2,0,0" />
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Text="{Binding SettingsVersion}" FontSize="10" Foreground="#555" />
+                        <TextBlock Text="{Binding SettingsHideMethod}" FontSize="10" Foreground="#F97316" Margin="0,2,0,0" />
+                        <TextBlock Text="{Binding SettingsFramework}" FontSize="10" Foreground="#444" Margin="0,2,0,0" />
+                    </StackPanel>
+                </ScrollViewer>
+                <TextBlock Grid.Row="3" Text="{Binding SettingsFooter}" FontSize="10" Foreground="#333" HorizontalAlignment="Center" Margin="0,0,0,6" />
+            </Grid>
+        </Border>
+
+        <!-- Toast -->
+        <Border x:Name="ToastBox" VerticalAlignment="Top" HorizontalAlignment="Left"
+                Margin="20,48,0,0" CornerRadius="6" Padding="12,8"
+                Background="#111" BorderBrush="#22C55E" BorderThickness="1"
+                Effect="{StaticResource Shadow}" Opacity="0" IsHitTestVisible="False" Visibility="Hidden">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" x:Name="ToastIcon" Text="✅" FontSize="13" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="1" x:Name="ToastText" Text="" FontSize="11" Foreground="#CCC" Margin="8,0,0,0" VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

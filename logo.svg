@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 340" width="400" height="340">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f0f1a"/>
+      <stop offset="100%" stop-color="#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="solidGrad" x1="0" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#00d4ff"/>
+      <stop offset="100%" stop-color="#0088cc"/>
+    </linearGradient>
+    <linearGradient id="fadeGrad" x1="0.5" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#0088cc" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="lineFade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00d4ff" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#00d4ff" stop-opacity="0.15"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="340" rx="24" fill="url(#bgGrad)"/>
+
+  <!-- === LOGO MARK === -->
+  <!-- Outer ring -->
+  <circle cx="200" cy="130" r="80" fill="none" stroke="#ffffff08" stroke-width="1"/>
+
+  <!-- Left half - solid (visible files) -->
+  <path d="M200 50 A80 80 0 0 0 200 210 A80 80 0 0 0 200 50" fill="url(#solidGrad)" opacity="0.95"/>
+
+  <!-- Right half - segmented (hidden files, fading out) -->
+  <g stroke="url(#lineFade)" stroke-width="5" stroke-linecap="round" fill="none">
+    <line x1="205" y1="58" x2="248" y2="58"/>
+    <line x1="210" y1="70" x2="260" y2="70"/>
+    <line x1="215" y1="82" x2="268" y2="82"/>
+    <line x1="218" y1="94" x2="274" y2="94"/>
+    <line x1="220" y1="106" x2="278" y2="106"/>
+    <line x1="222" y1="118" x2="280" y2="118"/>
+    <line x1="222" y1="130" x2="280" y2="130"/>
+    <line x1="222" y1="142" x2="278" y2="142"/>
+    <line x1="220" y1="154" x2="274" y2="154"/>
+    <line x1="218" y1="166" x2="268" y2="166"/>
+    <line x1="215" y1="178" x2="260" y2="178"/>
+    <line x1="210" y1="190" x2="248" y2="190"/>
+    <line x1="205" y1="202" x2="230" y2="202"/>
+  </g>
+
+  <!-- Divider line -->
+  <line x1="200" y1="50" x2="200" y2="210" stroke="#ffffff20" stroke-width="0.5"/>
+
+  <!-- Small decorative dots scattered (fading particles) -->
+  <g fill="#00d4ff" opacity="0.3">
+    <circle cx="255" cy="64" r="1.5"/>
+    <circle cx="270" cy="80" r="1"/>
+    <circle cx="282" cy="104" r="1.5"/>
+    <circle cx="285" cy="130" r="1"/>
+    <circle cx="282" cy="156" r="1.5"/>
+    <circle cx="270" cy="180" r="1"/>
+    <circle cx="250" cy="196" r="1.5"/>
+  </g>
+
+  <!-- === TYPOGRAPHY === -->
+  <!-- "UMBRA" main title -->
+  <text x="200" y="260" text-anchor="middle" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="56" font-weight="700" letter-spacing="12" fill="url(#solidGrad)">
+    UMBRA
+  </text>
+
+  <!-- Tagline - Persian -->
+  <text x="200" y="292" text-anchor="middle" font-family="'Segoe UI', Tahoma, sans-serif" font-size="14" fill="#ffffff50" letter-spacing="1">
+    مخفی‌سازی هوشمند فایل‌ها
+  </text>
+
+  <!-- Tagline - English -->
+  <text x="200" y="312" text-anchor="middle" font-family="'Segoe UI', sans-serif" font-size="10" fill="#ffffff30" letter-spacing="3">
+    INTELLIGENT FILE HIDING
+  </text>
+</svg>
