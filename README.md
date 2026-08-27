@@ -36,13 +36,19 @@
 dotnet build -c Release
 ```
 
-## 📦 ساخت فایل اجرایی تک‌فایله
+## 📦 ساخت فایل اجرایی بدون پیش‌نیاز
+
+برنامه به صورت **Self-Contained** و **Single-File** تنظیم شده — روی هر ویندوزی (7 به بالا) بدون نیاز به نصب .NET اجرا می‌شود:
 
 ```bash
-dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
+# 64 بیتی (ویندوزهای جدید)
+dotnet publish -c Release -r win-x64 -o publish/win-x64
+
+# 32 بیتی (سازگار با همه سیستم‌ها، قدیمی و جدید)
+dotnet publish -c Release -r win-x86 -o publish/win-x86
 ```
 
-خروجی: `publish/Umbra.exe`
+خروجی: `publish/win-x64/Umbra.exe` (~68MB فشرده) و `publish/win-x86/Umbra.exe` (~63MB) — بدون نیاز به نصب هیچ پیش‌نیازی
 
 ## ⚙️ تکنولوژی‌ها
 
