@@ -360,7 +360,8 @@
         </Grid>
 
         <!-- Bottom Credit -->
-        <Border Height="22" VerticalAlignment="Bottom" Background="#0D0D0D" BorderBrush="#1A1A1A" BorderThickness="0,1,0,0">
+        <Border Height="22" VerticalAlignment="Bottom" Background="#0D0D0D" BorderBrush="#1A1A1A" BorderThickness="0,1,0,0"
+                DataContext="{Binding Source={x:Static lang:TranslationSource.Instance}}">
             <TextBlock Text="{Binding MadeBy}" FontSize="9" Foreground="#00D4FF" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7" />
         </Border>
 

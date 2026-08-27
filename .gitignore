@@ -1,3 +1,10 @@
 bin/
 obj/
 publish/
+*.log
+items.json
+*.tmp
+.vs/
+*.user
+*.suo
+Umbra_error.log

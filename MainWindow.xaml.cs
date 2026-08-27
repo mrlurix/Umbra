@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -13,23 +14,52 @@ using Umbra.Lang;
 
 namespace Umbra
 {
-    public class FileItem : INotifyPropertyChanged
+    public class FileItem : INotifyPropertyChanged, IDisposable
     {
         private bool _isSelected;
         private bool _isHidden;
+        private bool _disposed;
 
         public FileItem()
         {
-            TranslationSource.LanguageChanged += () =>
-            {
-                OnPropertyChanged(nameof(StatusText));
-            };
+            TranslationSource.LanguageChanged += OnLanguageChanged;
+        }
+
+        private void OnLanguageChanged() => OnPropertyChanged(nameof(StatusText));
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+            TranslationSource.LanguageChanged -= OnLanguageChanged;
+            GC.SuppressFinalize(this);
         }
 
         public string FullPath { get; set; } = "";
-        public string DisplayName => Path.GetFileName(FullPath);
-        public string DisplayPath => Path.GetDirectoryName(FullPath) ?? FullPath;
-        public bool IsDirectory => Directory.Exists(FullPath);
+        public string DisplayName
+        {
+            get
+            {
+                try { return Path.GetFileName(FullPath) ?? FullPath; }
+                catch { return FullPath; }
+            }
+        }
+        public string DisplayPath
+        {
+            get
+            {
+                try { return Path.GetDirectoryName(FullPath) ?? FullPath; }
+                catch { return FullPath; }
+            }
+        }
+        public bool IsDirectory
+        {
+            get
+            {
+                try { return Directory.Exists(FullPath) && !File.Exists(FullPath); }
+                catch { return false; }
+            }
+        }
         public string Icon => IsDirectory ? "\U0001F4C1" : "\U0001F4C4";
 
         public long Size { get; set; }
@@ -108,6 +138,7 @@ namespace Umbra
         private readonly ObservableCollection<FileItem> _items = new();
         private bool _settingsOpen;
         private string _dataFile = "";
+        private const int MaxSearchQueryLength = 200;
 
         public MainWindow()
         {
@@ -150,7 +181,10 @@ namespace Umbra
 
         private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left) DragMove();
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                try { DragMove(); } catch { }
+            }
         }
 
         private void BtnMinimize_Click(object sender, RoutedEventArgs e) =>
@@ -168,12 +202,20 @@ namespace Umbra
 
         private void FilterItems()
         {
-            var q = SearchBox.Text.Trim().ToLower();
+            var raw = SearchBox.Text ?? "";
+            if (raw.Length > MaxSearchQueryLength) raw = raw.Substring(0, MaxSearchQueryLength);
+            var q = raw.Trim().ToLowerInvariant();
             ItemList.Items.Filter = (obj) =>
             {
                 if (string.IsNullOrEmpty(q)) return true;
                 if (obj is FileItem fi)
-                    return fi.DisplayName.ToLower().Contains(q) || fi.DisplayPath.ToLower().Contains(q);
+                {
+                    try
+                    {
+                        return fi.DisplayName.ToLowerInvariant().Contains(q) || fi.DisplayPath.ToLowerInvariant().Contains(q);
+                    }
+                    catch { return false; }
+                }
                 return true;
             };
         }
@@ -229,6 +271,13 @@ namespace Umbra
 
         private void BtnClearAll_Click(object sender, RoutedEventArgs e)
         {
+            if (_items.Count == 0) { ShowToast(TranslationSource.Instance.ToastNoSelection, false); return; }
+            var ts = TranslationSource.Instance;
+            var msg = ts.Lang == "fa" ? "آیا از پاک کردن تمام آیتم‌ها مطمئن هستید؟" : "Are you sure to clear all items?";
+            var caption = ts.Lang == "fa" ? "تأیید" : "Confirm";
+            if (MessageBox.Show(msg, caption, MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+
+            foreach (var it in _items) it.Dispose();
             _items.Clear();
             ShowToast(TranslationSource.Instance.ToastCleared, true);
             UpdateEmptyState();
@@ -240,15 +289,38 @@ namespace Umbra
         {
             try
             {
+                if (!SecurityHelper.ValidateItemsCount(_items.Count, out var cntErr))
+                {
+                    ShowToast(cntErr, false);
+                    return;
+                }
                 var desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                var path = Path.Combine(desktop, $"Umbra_list_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
-                var lines = _items.Select(i => $"{(i.IsHidden ? "[H]" : "[V]")} {i.FullPath}");
+                if (string.IsNullOrWhiteSpace(desktop) || !Directory.Exists(desktop))
+                {
+                    ShowToast(TranslationSource.Instance.Lang == "fa" ? "مسیر دسکتاپ یافت نشد" : "Desktop path not found", false);
+                    return;
+                }
+                var fileName = $"Umbra_list_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
+                // Sanitize filename (already safe, but ensure)
+                foreach (var c in Path.GetInvalidFileNameChars()) fileName = fileName.Replace(c, '_');
+                var path = Path.Combine(desktop, fileName);
+                // Validate canonical path is still under desktop
+                var canonDesktop = Path.GetFullPath(desktop).TrimEnd('\\') + "\\";
+                var canonPath = Path.GetFullPath(path);
+                if (!canonPath.StartsWith(canonDesktop, StringComparison.OrdinalIgnoreCase))
+                {
+                    ShowToast("مسیر نامعتبر", false);
+                    return;
+                }
+                var lines = _items.Select(i => $"{(i.IsHidden ? "[H]" : "[V]")} {i.FullPath}").ToList();
+                if (lines.Count > SecurityHelper.MaxItems) lines = lines.Take(SecurityHelper.MaxItems).ToList();
                 File.WriteAllLines(path, lines);
                 ShowToast(TranslationSource.Instance.ToastExported, true);
             }
-            catch (Exception ex)
+            catch
             {
-                ShowToast($"\u26A0\uFE0F {ex.Message}", false);
+                // FIX: Don't leak exception details (information disclosure)
+                ShowToast(TranslationSource.Instance.Lang == "fa" ? "خطا در خروجی گرفتن لیست" : "Failed to export list", false);
             }
         }
 
@@ -257,9 +329,14 @@ namespace Umbra
         {
             try
             {
+                if (!SecurityHelper.ValidateItemsCount(_items.Count, out _)) return;
                 var data = _items.Select(i => new ItemData(i.FullPath, i.IsHidden, i.Size)).ToList();
                 var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(_dataFile, json);
+                if (!SecurityHelper.ValidateJsonSize(json, out _)) return;
+                // FIX: Atomic write to prevent corruption / partial write attacks
+                var tmp = _dataFile + ".tmp";
+                File.WriteAllText(tmp, json);
+                File.Move(tmp, _dataFile, true);
             }
             catch { }
         }
@@ -269,16 +346,34 @@ namespace Umbra
             try
             {
                 if (!File.Exists(_dataFile)) return;
+                var info = new FileInfo(_dataFile);
+                if (info.Length > SecurityHelper.MaxJsonSize) return; // prevent OOM
                 var json = File.ReadAllText(_dataFile);
-                var data = JsonSerializer.Deserialize<ItemData[]>(json);
+                if (!SecurityHelper.ValidateJsonSize(json, out _)) return;
+                var options = new JsonSerializerOptions { AllowTrailingCommas = true };
+                var data = JsonSerializer.Deserialize<ItemData[]>(json, options);
                 if (data == null) return;
+                if (!SecurityHelper.ValidateItemsCount(data.Length, out _)) return;
+                // Dispose old items to prevent leak
+                foreach (var old in _items) old.Dispose();
                 _items.Clear();
+                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 foreach (var d in data)
                 {
-                    if (!File.Exists(d.FullPath) && !Directory.Exists(d.FullPath)) continue;
+                    if (d == null) continue;
+                    if (!SecurityHelper.ValidateItemData(d, out _)) continue;
+                    if (!SecurityHelper.TryCanonicalize(d.FullPath, out var canon, out _)) continue;
+                    if (!seen.Add(canon)) continue;
+                    if (_items.Count >= SecurityHelper.MaxItems) break;
+                    try
+                    {
+                        if (!File.Exists(canon) && !Directory.Exists(canon)) continue;
+                        if (SecurityHelper.IsReparsePoint(canon)) continue; // skip symlinks/junctions
+                    }
+                    catch { continue; }
                     _items.Add(new FileItem
                     {
-                        FullPath = d.FullPath,
+                        FullPath = canon,
                         IsHidden = d.IsHidden,
                         Size = d.Size
                     });
@@ -296,41 +391,91 @@ namespace Umbra
             var dlg = new System.Windows.Forms.FolderBrowserDialog { Description = ts.Lang == "fa" ? "انتخاب پوشه برای اسکن" : "Select folder to scan" };
             if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
 
-            var root = dlg.SelectedPath;
+            if (!SecurityHelper.TryCanonicalize(dlg.SelectedPath, out var root, out _))
+            {
+                ShowToast(ts.Lang == "fa" ? "مسیر نامعتبر" : "Invalid path", false);
+                return;
+            }
+            if (!Directory.Exists(root))
+            {
+                ShowToast(ts.Lang == "fa" ? "پوشه یافت نشد" : "Folder not found", false);
+                return;
+            }
+            if (SecurityHelper.IsCriticalSystemPath(root))
+            {
+                var warn = ts.Lang == "fa" ? "اسکن مسیرهای سیستمی حساس مجاز نیست" : "Scanning critical system paths is not allowed";
+                ShowToast(warn, false);
+                return;
+            }
+
             int found = 0;
+            const int MaxScanFound = 2000;
+            var seen = new HashSet<string>(_items.Select(i => i.FullPath), StringComparer.OrdinalIgnoreCase);
+            var stack = new Stack<string>();
+            stack.Push(root);
+            int dirsVisited = 0;
+            const int MaxDirsVisited = 10000;
 
             try
             {
-                foreach (var f in Directory.GetFiles(root, "*", SearchOption.AllDirectories))
+                while (stack.Count > 0 && found < MaxScanFound && dirsVisited < MaxDirsVisited)
                 {
-                    try
+                    var current = stack.Pop();
+                    dirsVisited++;
+                    if (SecurityHelper.IsReparsePoint(current)) continue;
+
+                    // Files in current
+                    string[] files = Array.Empty<string>();
+                    try { files = Directory.GetFiles(current); } catch (UnauthorizedAccessException) { continue; } catch { continue; }
+                    foreach (var f in files)
                     {
-                        if ((File.GetAttributes(f) & FileAttributes.Hidden) == FileAttributes.Hidden &&
-                            !_items.Any(i => i.FullPath.Equals(f, StringComparison.OrdinalIgnoreCase)))
+                        if (found >= MaxScanFound) break;
+                        try
                         {
-                            _items.Add(new FileItem
+                            if (SecurityHelper.IsReparsePoint(f)) continue;
+                            if ((File.GetAttributes(f) & FileAttributes.Hidden) == FileAttributes.Hidden &&
+                                !seen.Contains(f) &&
+                                SecurityHelper.TryCanonicalize(f, out var cf, out _))
                             {
-                                FullPath = f,
-                                IsHidden = true,
-                                Size = new FileInfo(f).Length
-                            });
-                            found++;
+                                if (seen.Add(cf))
+                                {
+                                    _items.Add(new FileItem
+                                    {
+                                        FullPath = cf,
+                                        IsHidden = true,
+                                        Size = new FileInfo(f).Length
+                                    });
+                                    found++;
+                                }
+                            }
                         }
+                        catch { }
                     }
-                    catch { }
-                }
-                foreach (var d in Directory.GetDirectories(root, "*", SearchOption.AllDirectories))
-                {
-                    try
+                    if (found >= MaxScanFound) break;
+                    // Directories
+                    string[] dirs = Array.Empty<string>();
+                    try { dirs = Directory.GetDirectories(current); } catch (UnauthorizedAccessException) { continue; } catch { continue; }
+                    foreach (var d in dirs)
                     {
-                        if ((File.GetAttributes(d) & FileAttributes.Hidden) == FileAttributes.Hidden &&
-                            !_items.Any(i => i.FullPath.Equals(d, StringComparison.OrdinalIgnoreCase)))
+                        try
                         {
-                            _items.Add(new FileItem { FullPath = d, IsHidden = true });
-                            found++;
+                            if (SecurityHelper.IsReparsePoint(d)) continue;
+                            if ((File.GetAttributes(d) & FileAttributes.Hidden) == FileAttributes.Hidden &&
+                                !seen.Contains(d) &&
+                                SecurityHelper.TryCanonicalize(d, out var cd, out _))
+                            {
+                                if (seen.Add(cd))
+                                {
+                                    _items.Add(new FileItem { FullPath = cd, IsHidden = true });
+                                    found++;
+                                    if (found >= MaxScanFound) break;
+                                }
+                            }
+                            // Push for deeper traversal even if not hidden, to find nested hidden
+                            if (stack.Count < MaxDirsVisited) stack.Push(d);
                         }
+                        catch { }
                     }
-                    catch { }
                 }
             }
             catch { }
@@ -343,13 +488,24 @@ namespace Umbra
         // ---- add ----
         private void AddItems(string[] paths)
         {
-            int n = 0;
-            foreach (var p in paths)
+            if (paths == null || paths.Length == 0) return;
+            if (_items.Count >= SecurityHelper.MaxItems)
             {
+                ShowToast(TranslationSource.Instance.Lang == "fa" ? $"حداکثر {SecurityHelper.MaxItems} آیتم مجاز است" : $"Max {SecurityHelper.MaxItems} items allowed", false);
+                return;
+            }
+            int n = 0;
+            foreach (var raw in paths)
+            {
+                if (_items.Count >= SecurityHelper.MaxItems) break;
+                if (string.IsNullOrWhiteSpace(raw)) continue;
+                if (!SecurityHelper.TryCanonicalize(raw, out var p, out _)) continue;
                 if (_items.Any(i => i.FullPath.Equals(p, StringComparison.OrdinalIgnoreCase))) continue;
                 try
                 {
                     if (!File.Exists(p) && !Directory.Exists(p)) continue;
+                    if (SecurityHelper.IsReparsePoint(p)) continue;
+                    if (SecurityHelper.IsCriticalSystemPath(p)) continue;
                     bool h = (File.GetAttributes(p) & FileAttributes.Hidden) == FileAttributes.Hidden;
                     long sz = 0;
                     if (File.Exists(p)) sz = new FileInfo(p).Length;
@@ -389,14 +545,35 @@ namespace Umbra
             var ts = TranslationSource.Instance;
             var sel = _items.Where(i => i.IsSelected).ToList();
             if (sel.Count == 0) { ShowToast(ts.ToastNoSelection, false); return; }
+
+            // FIX: Pre-validate all selected items for critical paths before any operation
+            var blocked = sel.Where(i => SecurityHelper.IsCriticalSystemPath(i.FullPath)).ToList();
+            if (blocked.Count > 0)
+            {
+                var warn = ts.Lang == "fa" ? $"{blocked.Count} مسیر سیستمی حساس نادیده گرفته شد" : $"{blocked.Count} critical system paths skipped";
+                ShowToast(warn, false);
+                sel = sel.Except(blocked).ToList();
+                if (sel.Count == 0) return;
+            }
+
+            // FIX: Confirmation for Super Hide (modifies System attribute, more dangerous)
+            if (hide && super)
+            {
+                var msg = ts.Lang == "fa" ? $"آیا {sel.Count} آیتم با مخفی‌سازی قوی (Hidden+System) مخفی شود؟" : $"Strong hide {sel.Count} items with Hidden+System?";
+                if (MessageBox.Show(msg, ts.Lang == "fa" ? "تأیید" : "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+            }
+
             int ok = 0, fail = 0;
             foreach (var item in sel)
             {
                 try
                 {
                     var p = item.FullPath;
-                    if (!File.Exists(p) && !Directory.Exists(p)) { fail++; continue; }
-                    var a = File.GetAttributes(p);
+                    // FIX: Validate canonical path again (TOCTOU mitigation - re-validate)
+                    if (!SecurityHelper.TryCanonicalize(p, out var canon, out _)) { fail++; continue; }
+                    if (!File.Exists(canon) && !Directory.Exists(canon)) { fail++; continue; }
+                    if (SecurityHelper.IsReparsePoint(canon)) { fail++; continue; }
+                    var a = File.GetAttributes(canon);
                     if (hide)
                     {
                         a |= FileAttributes.Hidden;
@@ -408,16 +585,16 @@ namespace Umbra
                         a &= ~FileAttributes.Hidden;
                         a &= ~FileAttributes.System;
                     }
-                    File.SetAttributes(p, a);
+                    File.SetAttributes(canon, a);
                     item.IsHidden = hide;
                     ok++;
                 }
                 catch { fail++; }
             }
             string actionKey = hide ? (super ? "ToastSuperHideAction" : "ToastHideAction") : "ToastUnhideAction";
-            string msg = $"\u2705 {ok} {ts.T(actionKey)}";
-            if (fail > 0) msg += $" | {fail} {ts.ToastErrors}";
-            ShowToast(msg, fail == 0);
+            string msg2 = $"\u2705 {ok} {ts.T(actionKey)}";
+            if (fail > 0) msg2 += $" | {fail} {ts.ToastErrors}";
+            ShowToast(msg2, fail == 0);
             RefreshStats();
             SaveItems();
         }
@@ -427,7 +604,11 @@ namespace Umbra
             var ts = TranslationSource.Instance;
             var sel = _items.Where(i => i.IsSelected).ToList();
             if (sel.Count == 0) { ShowToast(ts.ToastNoSelection, false); return; }
-            foreach (var item in sel) _items.Remove(item);
+            foreach (var item in sel)
+            {
+                item.Dispose();
+                _items.Remove(item);
+            }
             ShowToast(string.Format(ts.ToastRemoved, sel.Count), true);
             UpdateEmptyState();
             RefreshStats();
@@ -441,6 +622,7 @@ namespace Umbra
                 try
                 {
                     if (!File.Exists(item.FullPath) && !Directory.Exists(item.FullPath)) continue;
+                    if (SecurityHelper.IsReparsePoint(item.FullPath)) continue;
                     bool h = (File.GetAttributes(item.FullPath) & FileAttributes.Hidden) == FileAttributes.Hidden;
                     item.IsHidden = h;
                     if (File.Exists(item.FullPath)) item.Size = new FileInfo(item.FullPath).Length;
@@ -477,9 +659,13 @@ namespace Umbra
             SettingsStatTotal.Text = _items.Count.ToString();
             SettingsStatHidden.Text = hidden.ToString();
             SettingsStatVisible.Text = visible.ToString();
-            SettingsStatTotalLabel.Text = string.Format(ts.T("StatTotalCount"), _items.Count);
-            SettingsStatHiddenLabel.Text = string.Format(ts.T("StatHiddenCount"), hidden);
-            SettingsStatVisibleLabel.Text = string.Format(ts.T("StatVisibleCount"), visible);
+            try
+            {
+                SettingsStatTotalLabel.Text = string.Format(ts.T("StatTotalCount"), _items.Count);
+                SettingsStatHiddenLabel.Text = string.Format(ts.T("StatHiddenCount"), hidden);
+                SettingsStatVisibleLabel.Text = string.Format(ts.T("StatVisibleCount"), visible);
+            }
+            catch { }
         }
 
         private void UpdateEmptyState() =>
@@ -487,8 +673,10 @@ namespace Umbra
 
         private void ShowToast(string msg, bool success)
         {
+            // FIX: Sanitize message length to prevent UI overflow
+            if (msg != null && msg.Length > 300) msg = msg.Substring(0, 300) + "...";
             ToastIcon.Text = success ? "✅" : "⚠️";
-            ToastText.Text = msg;
+            ToastText.Text = msg ?? "";
             ToastBox.BorderBrush = success
                 ? new SolidColorBrush(Color.FromRgb(0x22, 0xC5, 0x5E))
                 : new SolidColorBrush(Color.FromRgb(0xF9, 0x73, 0x16));
@@ -520,6 +708,7 @@ namespace Umbra
         protected override void OnClosing(CancelEventArgs e)
         {
             SaveItems();
+            foreach (var it in _items) it.Dispose();
             base.OnClosing(e);
         }
     }
