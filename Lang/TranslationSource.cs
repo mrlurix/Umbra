@@ -10,7 +10,7 @@ namespace Umbra.Lang
         private static readonly TranslationSource _instance = new();
         public static TranslationSource Instance => _instance;
 
-        private string _lang = "fa";
+        private string _lang = "en";
 
         public string Lang
         {

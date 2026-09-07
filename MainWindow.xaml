@@ -11,7 +11,7 @@
         WindowStyle="None"
         Background="#0A0A0A"
         ResizeMode="CanResize"
-        FontFamily="B Nazanin"
+        FontFamily="Segoe UI"
         x:Name="ThisWindow">
     <WindowChrome.WindowChrome>
         <WindowChrome GlassFrameThickness="0" CornerRadius="0" ResizeBorderThickness="5" CaptionHeight="0" UseAeroCaptionButtons="False" />

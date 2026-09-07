@@ -1,62 +1,62 @@
 # 🌘 Umbra
 
-مدیریت و مخفی‌سازی هوشمند فایل‌ها و پوشه‌ها در ویندوز — ساخته شده با WPF و .NET 8
+Smart file & folder hiding manager for Windows — built with WPF and .NET 8
 
 ---
 
-## ✨ امکانات
+## ✨ Features
 
-- 🔒 **مخفی‌سازی فایل و پوشه** با تغییر ویژگی‌های سیستم (Hidden)
-- 🛡️ **مخفی‌سازی قوی (Super Hide)** با ویژگی‌های Hidden + System — فایل‌ها حتی با «نمایش فایل‌های مخفی» در Explorer دیده نمی‌شوند
-- 🧲 **کشیدن و رها کردن (Drag & Drop)** فایل از Explorer
-- 🔍 **اسکن** پوشه‌ها برای پیدا کردن فایل‌های از قبل مخفی
-- 🗂️ **جستجو**، انتخاب چندتایی، حذف از لیست و بروزرسانی وضعیت
-- 💾 **ذخیره و بارگذاری خودکار** لیست آیت‌م‌ها در فایل `items.json`
-- 📤 **خروجی گرفتن لیست** به صورت فایل متنی روی دسکتاپ
-- 🌐 **دوزبانه**: فارسی و انگلیسی (با تغییر جهت RTL/LTR)
-- 🎨 تم تیره با رنگ‌های نئونی، انیمیشن‌های نرم و آیکون اختصاصی
-- 🧭 پنل تنظیمات کامل با آمار، میانبرها، نکات و اطلاعات درباره برنامه
+- 🔒 **Hide files & folders** via system attributes (Hidden)
+- 🛡️ **Super Hide** with Hidden + System — files remain invisible even with “Show hidden files” enabled
+- 🧲 **Drag & Drop** from Explorer
+- 🔍 **Scan** folders to find already-hidden files
+- 🗂️ **Search**, multi-select, remove from list and refresh status
+- 💾 **Auto save/load** item list in `items.json`
+- 📤 **Export list** to text file on Desktop
+- 🌐 **English UI** (LTR) with clean modern theme
+- 🎨 Dark theme with neon accents, smooth animations and custom icon
+- 🧭 Full settings panel with stats, shortcuts, tips and about
 
-## ⌨️ میانبرها
+## ⌨️ Shortcuts
 
-| کلید | عملکرد |
-|------|--------|
-| `Ctrl+A` | انتخاب همه |
-| `Ctrl+H` | مخفی‌سازی |
-| `Ctrl+Shift+H` | مخفی‌سازی قوی |
-| `Ctrl+U` | آشکارسازی |
-| `Delete` | حذف از لیست |
-| `Ctrl+S` | ذخیره لیست |
-| `Ctrl+O` | بارگذاری لیست |
-| `F5` | بروزرسانی وضعیت |
+| Key | Action |
+|-----|--------|
+| `Ctrl+A` | Select All |
+| `Ctrl+H` | Hide |
+| `Ctrl+Shift+H` | Strong Hide |
+| `Ctrl+U` | Unhide |
+| `Delete` | Remove from list |
+| `Ctrl+S` | Save list |
+| `Ctrl+O` | Load list |
+| `F5` | Refresh status |
 
-## 🛠️ ساخت پروژه
+## 🛠️ Build
 
 ```bash
 dotnet build -c Release
 ```
 
-## 📦 ساخت فایل اجرایی بدون پیش‌نیاز
+## 📦 Zero-prerequisite executable
 
-برنامه به صورت **Self-Contained** و **Single-File** تنظیم شده — روی هر ویندوزی (7 به بالا) بدون نیاز به نصب .NET اجرا می‌شود:
+Self-Contained Single-File — runs on any Windows 7+ without installing .NET:
 
 ```bash
-# 64 بیتی (ویندوزهای جدید)
+# 64-bit (modern Windows)
 dotnet publish -c Release -r win-x64 -o publish/win-x64
 
-# 32 بیتی (سازگار با همه سیستم‌ها، قدیمی و جدید)
+# 32-bit (compatible with all systems)
 dotnet publish -c Release -r win-x86 -o publish/win-x86
 ```
 
-خروجی: `publish/win-x64/Umbra.exe` (~68MB فشرده) و `publish/win-x86/Umbra.exe` (~63MB) — بدون نیاز به نصب هیچ پیش‌نیازی
+Output: `publish/win-x64/Umbra.exe` (~68MB compressed) and `publish/win-x86/Umbra.exe` (~63MB) — no prerequisites required
 
-## ⚙️ تکنولوژی‌ها
+## ⚙️ Tech
 
 - WPF (Windows Presentation Foundation)
 - .NET 8.0
 - C#
-- فونت: B Nazanin
+- Font: Segoe UI
 
 ---
 
-ساخته شده توسط **mrlurix** 🖤
+Made by **mrlurix** 🖤
