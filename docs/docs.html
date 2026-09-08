@@ -15,7 +15,7 @@
       <div class="logo-text"><b>UMB</b><span>RA</span></div>
     </a>
     <div class="nav-right">
-      <div class="search-pill">⌕ Search <kbd>Ctrl K</kbd></div>
+      <div class="search-pill" id="search-trigger" role="button" tabindex="0" aria-label="Search">⌕ Search <kbd>Ctrl K</kbd></div>
       <a class="nav-link" href="index.html">Home</a>
       <a class="nav-link" href="docs.html" style="color:#00D4FF;border-color:rgba(0,212,255,0.3)">Docs</a>
       <a class="nav-link" href="https://github.com/mrlurix/Umbra" target="_blank">GitHub ↗</a>
@@ -157,5 +157,74 @@ dotnet publish -c Release -r win-x86 -o publish/win-x86</code></pre>
     </main>
   </div>
 </div>
+
+<div id="search-modal" class="search-modal" aria-hidden="true">
+  <div class="search-backdrop"></div>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="Search">
+    <div class="search-input-wrap">
+      <span>⌕</span>
+      <input id="search-input" type="text" placeholder="Search docs, features, shortcuts..." autocomplete="off" spellcheck="false">
+      <kbd>ESC</kbd>
+    </div>
+    <div id="search-results" class="search-results"></div>
+    <div class="search-footer">
+      <span><kbd>↑</kbd> <kbd>↓</kbd> navigate</span>
+      <span><kbd>↵</kbd> open</span>
+      <span><kbd>ESC</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<script>
+const searchIndex=[
+  {title:"Introduction",desc:"What Umbra does",url:"#intro",icon:"🌘"},
+  {title:"Installation",desc:"Download x64 / x86",url:"#install",icon:"⬇"},
+  {title:"Quick Start",desc:"Add → Select → Hide",url:"#quick",icon:"🚀"},
+  {title:"Hide / Super Hide",desc:"Hidden vs Hidden+System",url:"#hide",icon:"🔒"},
+  {title:"Scan",desc:"Find hidden files",url:"#scan",icon:"🔍"},
+  {title:"Search & Stats",desc:"Live search and counters",url:"#search",icon:"🔎"},
+  {title:"Settings Panel",desc:"Shortcuts, stats, actions",url:"#settings",icon:"⚙"},
+  {title:"Save / Load / Export",desc:"items.json & Desktop export",url:"#persist",icon:"💾"},
+  {title:"Shortcuts",desc:"Keyboard reference",url:"#shortcuts",icon:"⌨"},
+  {title:"Security",desc:"Path validation & hardening",url:"#security",icon:"🛡"},
+  {title:"Build from Source",desc:"dotnet build & publish",url:"#build",icon:"🛠"},
+  {title:"FAQ",desc:"Common questions",url:"#faq",icon:"❓"},
+];
+const modal=document.getElementById('search-modal');
+const input=document.getElementById('search-input');
+const results=document.getElementById('search-results');
+const trigger=document.getElementById('search-trigger');
+let active=-1;
+function openSearch(){modal.classList.add('open');modal.setAttribute('aria-hidden','false');input.value='';render('');input.focus();active=-1}
+function closeSearch(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');trigger.focus()}
+function render(q){
+  const f=q.toLowerCase().trim();
+  const items=f?searchIndex.filter(i=>i.title.toLowerCase().includes(f)||i.desc.toLowerCase().includes(f)):searchIndex.slice(0,7);
+  if(!items.length){results.innerHTML='<div class="search-empty">No results for “'+q.replace(/</g,'&lt;')+'”</div>';return}
+  results.innerHTML=items.map((it,i)=>`
+    <a class="search-item ${i===active?'active':''}" href="${it.url}" data-i="${i}">
+      <div class="search-item-icon">${it.icon}</div>
+      <div class="search-item-content"><div class="search-item-title">${it.title}</div><div class="search-item-desc">${it.desc}</div></div>
+      <div class="search-item-action">↵</div>
+    </a>`).join('');
+}
+input.addEventListener('input',()=>{active=-1;render(input.value)});
+input.addEventListener('keydown',e=>{
+  const items=results.querySelectorAll('.search-item');
+  if(e.key==='ArrowDown'){e.preventDefault();active=Math.min(active+1,items.length-1);render(input.value);items[active]?.scrollIntoView({block:'nearest'})}
+  else if(e.key==='ArrowUp'){e.preventDefault();active=Math.max(active-1,0);render(input.value)}
+  else if(e.key==='Enter'){e.preventDefault();if(active>=0) items[active]?.click(); else items[0]?.click()}
+  else if(e.key==='Escape') closeSearch();
+});
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openSearch()}
+  else if(e.key==='Escape'&&modal.classList.contains('open')) closeSearch();
+  else if(e.key==='/'&&!modal.classList.contains('open')&&document.activeElement.tagName!=='INPUT'){e.preventDefault();openSearch()}
+});
+trigger.addEventListener('click',openSearch);
+trigger.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openSearch()}});
+modal.querySelector('.search-backdrop').addEventListener('click',closeSearch);
+render('');
+</script>
 </body>
 </html>
