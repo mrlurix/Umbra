@@ -3,118 +3,148 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Umbra — Smart file hiding for Windows</title>
-<meta name="description" content="Umbra is a modern Windows app to hide files and folders with Hidden and Super Hide (Hidden+System). Self-contained, no prerequisites.">
+<title>Umbra — Hide files like a pro</title>
+<meta name="description" content="Umbra — Smart file & folder hiding for Windows. 6 modes, Super Hide with Hidden+System, self-contained single file.">
 <link rel="icon" href="assets/logo.svg">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<nav>
-  <div class="container nav-inner">
-    <a class="logo" href="index.html">
-      <div class="logo-mark">🌘</div>
-      <div class="logo-text">UMBRA <span>File Manager</span></div>
+<div class="nav-pill-wrap">
+  <div class="nav-pill">
+    <a class="logo" href="index.html" style="text-decoration:none">
+      <div class="logo-mark"><img src="assets/logo.svg" alt=""></div>
+      <div class="logo-text"><b>UMB</b><span>RA</span></div>
     </a>
-    <div class="nav-links">
-      <a class="active" href="index.html">Home</a>
-      <a href="docs.html">Docs</a>
-      <a href="https://github.com/mrlurix/Umbra" target="_blank">GitHub</a>
-      <a class="btn btn-primary" style="padding:7px 12px;font-size:12px" href="https://github.com/mrlurix/Umbra/releases/latest">Download</a>
+    <div class="nav-right">
+      <div class="search-pill">⌕ Search <kbd>Ctrl K</kbd></div>
+      <a class="nav-link" href="docs.html">Docs</a>
+      <a class="nav-link" href="https://github.com/mrlurix/Umbra" target="_blank">GitHub ↗</a>
     </div>
   </div>
-</nav>
+</div>
 
 <header class="hero container">
-  <div class="badge"><span class="badge-dot"></span> v1.2.0 — Self-contained, no prerequisites</div>
-  <h1>Hide anything.<br><span>Stay invisible.</span></h1>
-  <p class="subtitle">Umbra is a fast, modern Windows app to hide files &amp; folders. Standard hide or <b>Super Hide</b> (Hidden+System) that survives “Show hidden files”.</p>
-  <div class="hero-actions">
-    <a class="btn btn-primary" href="https://github.com/mrlurix/Umbra/releases/latest">⬇ Download for Windows</a>
-    <a class="btn btn-ghost" href="docs.html">Read docs →</a>
+  <div class="hero-icon">
+    <!-- Umbra logo: half-circle + lines -->
+    <svg viewBox="0 0 64 64" width="48" height="48" aria-hidden="true">
+      <path d="M32 8 A24 24 0 0 0 32 56" fill="#00D4FF" opacity="0.95"/>
+      <g stroke="#00D4FF" stroke-width="2.4" stroke-linecap="round" opacity="0.55">
+        <path d="M36 14 H60"/><path d="M38 20 H62"/><path d="M40 26 H62"/><path d="M40 32 H60"/><path d="M38 38 H56"/><path d="M36 44 H50"/>
+      </g>
+    </svg>
   </div>
-  <div class="hero-meta">Windows 7+ • No .NET install required • 68MB (x64) / 63MB (x86) • Made by mrlurix</div>
+  <h1>UMB<span class="accent">RA</span></h1>
+  <p class="subtitle">Hide files like a pro. 6 modes, Super Hide with Hidden+System, one click per file —<br>runs on your Windows in 2 seconds. No prerequisites.</p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="docs.html">Get Started →</a>
+    <a class="btn btn-ghost" href="https://github.com/mrlurix/Umbra" target="_blank">GitHub</a>
+  </div>
+
+  <div class="install-wrap">
+    <div class="install-bar">
+      <span>Quick download</span>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText(this.nextElementSibling.innerText);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)">Copy</button>
+      <span style="display:none">curl -L https://github.com/mrlurix/Umbra/releases/latest/download/Umbra-win-x64.exe -o Umbra.exe</span>
+    </div>
+    <div class="install-code" id="install-code">curl -L https://github.com/mrlurix/Umbra/releases/latest/download/Umbra-win-x64.exe -o Umbra.exe</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="pills">
+    <span class="pill">Hide</span>
+    <span class="pill">Super Hide</span>
+    <span class="pill">Scan</span>
+    <span class="pill">Search</span>
+    <span class="pill">Drag &amp; Drop</span>
+    <span class="pill">Export</span>
+    <span class="pill">Auto Save</span>
+    <span class="pill">Secure</span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><strong>5000</strong><span>Max items</span></div>
+    <div class="stat"><strong>1-file</strong><span>Single exe</span></div>
+    <div class="stat"><strong>2 builds</strong><span>x64 &amp; x86</span></div>
+    <div class="stat"><strong>Win7+</strong><span>Runs everywhere</span></div>
+  </div>
+
+  <div class="divider"></div>
 
   <div class="screenshot-wrap">
     <img src="assets/screenshot.svg" alt="Umbra screenshot">
   </div>
-  <div class="stats">
-    <div class="stat"><strong style="color:#A855F7">Single-File</strong><span style="font-size:11px;color:#888">No installer</span></div>
-    <div class="stat"><strong style="color:#00D4FF">Super Hide</strong><span style="font-size:11px;color:#888">Hidden+System</span></div>
-    <div class="stat"><strong style="color:#22C55E">Zero setup</strong><span style="font-size:11px;color:#888">Just run the exe</span></div>
-  </div>
 </header>
 
 <section class="section container">
-  <h2>Everything you need to stay hidden</h2>
-  <p class="lead">Built with WPF + .NET 8. Dark neon theme, smooth animations, secure by design.</p>
+  <h2>Everything you need to hide</h2>
+  <p class="lead">Dark neon UI, secure by design, zero setup. All features documented.</p>
   <div class="grid">
     <div class="card">
-      <div class="icon" style="background:#3022C55E">🙈</div>
+      <div class="icon" style="background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.25)">🙈</div>
       <h3>Hide &amp; Unhide</h3>
-      <p>Toggle the Hidden attribute instantly. Works for files and folders, even on network drives.</p>
+      <p>Instant Hidden attribute toggle. Works for files &amp; folders, even on network drives.</p>
     </div>
     <div class="card">
-      <div class="icon" style="background:#30EF4444">🔒</div>
+      <div class="icon" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.25)">🔒</div>
       <h3>Super Hide</h3>
-      <p>Hidden + System attributes. Bypasses Explorer’s “Show hidden files” — truly invisible.</p>
+      <p>Hidden + System. Survives Explorer “Show hidden files” — truly invisible.</p>
     </div>
     <div class="card">
-      <div class="icon" style="background:#206366F1">🔍</div>
-      <h3>Scan hidden files</h3>
-      <p>Recursively scans any folder for already-hidden items and imports them safely (reparse points skipped).</p>
+      <div class="icon" style="background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.25)">🔍</div>
+      <h3>Smart Scan</h3>
+      <p>Finds already-hidden files recursively. Skips junctions, limits to 2000 items.</p>
     </div>
     <div class="card">
-      <div class="icon" style="background:#2000D4FF">🔎</div>
-      <h3>Search &amp; multi-select</h3>
-      <p>Fast live search, Ctrl+Click multi-select, Select All, and keyboard shortcuts.</p>
+      <div class="icon" style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.25)">🔎</div>
+      <h3>Search &amp; Stats</h3>
+      <p>Live search by name/path, live counters for items/hidden/size.</p>
     </div>
     <div class="card">
-      <div class="icon" style="background:#20A855F7">💾</div>
-      <h3>Auto save / export</h3>
-      <p>List auto-saved to <code>items.json</code> (5 MB / 5000 items limit). Export to Desktop as text.</p>
+      <div class="icon" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25)">💾</div>
+      <h3>Auto Save &amp; Export</h3>
+      <p>Auto-saved to items.json (atomic). One-click export to Desktop.</p>
     </div>
     <div class="card">
-      <div class="icon" style="background:#20EC4899">🎨</div>
+      <div class="icon" style="background:rgba(236,72,153,0.12);border:1px solid rgba(236,72,153,0.25)">🎨</div>
       <h3>Modern UI</h3>
-      <p>Dark theme (#0A0A0A), neon accents, animations, statistics and toast feedback.</p>
+      <p>Dark #0A0A0A, neon accents, animations, toasts, settings panel.</p>
     </div>
   </div>
 </section>
 
 <section class="section container">
+  <h2>Downloads</h2>
   <div class="downloads">
     <div class="dl-card">
-      <h3>⬇ Download — Windows 64-bit</h3>
-      <p>For modern Windows 10/11 (x64). Self-contained, ~68 MB compressed. No .NET required.</p>
+      <h3>Windows 64-bit</h3>
+      <p>Recommended for Windows 10/11 x64 — ~68 MB compressed.</p>
       <a class="btn btn-primary" href="https://github.com/mrlurix/Umbra/releases/latest">Download Umbra-win-x64.exe</a>
-      <code>dotnet publish -r win-x64 -o publish/win-x64</code>
+      <code style="margin-top:8px;display:block">publish/win-x64/Umbra.exe</code>
     </div>
     <div class="dl-card">
-      <h3>⬇ Download — Windows 32-bit</h3>
-      <p>Universal build for old and new PCs (x86). Runs on both 32 &amp; 64-bit, ~63 MB.</p>
+      <h3>Windows 32-bit</h3>
+      <p>Universal — works on 32 &amp; 64-bit, ~63 MB.</p>
       <a class="btn btn-ghost" href="https://github.com/mrlurix/Umbra/releases/latest">Download Umbra-win-x86.exe</a>
-      <code>dotnet publish -r win-x86 -o publish/win-x86</code>
+      <code style="margin-top:8px;display:block">publish/win-x86/Umbra.exe</code>
     </div>
   </div>
-</section>
-
-<section class="section container">
-  <h2>Keyboard shortcuts</h2>
-  <table>
-    <tr><th>Key</th><th>Action</th></tr>
-    <tr><td>Ctrl+A</td><td>Select all</td></tr>
-    <tr><td>Ctrl+H</td><td>Hide</td></tr>
-    <tr><td>Ctrl+Shift+H</td><td>Super Hide (Hidden+System)</td></tr>
-    <tr><td>Ctrl+U</td><td>Unhide</td></tr>
-    <tr><td>Delete</td><td>Remove from list</td></tr>
-    <tr><td>Ctrl+S / Ctrl+O</td><td>Save / Load list</td></tr>
-    <tr><td>F5</td><td>Refresh status</td></tr>
-  </table>
 </section>
 
 <footer class="container">
   <span>© 2026 Umbra — Made by <a href="https://github.com/mrlurix">mrlurix</a> 🖤</span>
   <span><a href="docs.html">Docs</a> • <a href="https://github.com/mrlurix/Umbra">GitHub</a> • <a href="https://github.com/mrlurix/Umbra/releases/latest">Releases</a></span>
 </footer>
+
+<script>
+// Ctrl+K focus search (placeholder)
+document.addEventListener('keydown', e=>{
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k'){
+    e.preventDefault();
+    document.querySelector('.search-pill').style.outline='1px solid var(--accent)';
+    setTimeout(()=>document.querySelector('.search-pill').style.outline='none',1000);
+  }
+});
+</script>
 </body>
 </html>
