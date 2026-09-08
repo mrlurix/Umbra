@@ -2,6 +2,10 @@
 
 Smart file & folder hiding manager for Windows — built with WPF and .NET 8
 
+🌐 **Site:** https://mrlurix.github.io/Umbra/ • **Docs:** https://mrlurix.github.io/Umbra/docs.html
+
+![Umbra Screenshot](docs/assets/screenshot.svg)
+
 ---
 
 ## ✨ Features

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Docs — Umbra</title>
+<link rel="icon" href="assets/logo.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+  <div class="container nav-inner">
+    <a class="logo" href="index.html"><div class="logo-mark">🌘</div><div class="logo-text">UMBRA <span>Docs</span></div></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a class="active" href="docs.html">Docs</a>
+      <a href="https://github.com/mrlurix/Umbra" target="_blank">GitHub</a>
+      <a class="btn btn-primary" style="padding:7px 12px;font-size:12px" href="https://github.com/mrlurix/Umbra/releases/latest">Download</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container" style="padding-top:24px">
+  <div class="docs-layout">
+    <aside class="sidebar">
+      <h4>Getting started</h4>
+      <a href="#intro">Introduction</a>
+      <a href="#install">Installation</a>
+      <a href="#quick">Quick start</a>
+      <h4>Features</h4>
+      <a href="#hide">Hide / Super Hide</a>
+      <a href="#scan">Scan</a>
+      <a href="#search">Search &amp; Stats</a>
+      <a href="#settings">Settings panel</a>
+      <a href="#persist">Save / Load / Export</a>
+      <h4>Reference</h4>
+      <a href="#shortcuts">Shortcuts</a>
+      <a href="#security">Security</a>
+      <a href="#build">Build from source</a>
+      <a href="#faq">FAQ</a>
+    </aside>
+
+    <main class="doc">
+      <h1 style="font-size:28px">Documentation</h1>
+      <p style="color:#888">Complete guide to Umbra — everything the app can do, in English.</p>
+
+      <h2 id="intro">Introduction</h2>
+      <p>Umbra is a desktop file-hiding manager for Windows. It doesn’t encrypt — it toggles the native NTFS attributes <code>Hidden</code> and optionally <code>System</code>. That makes it instant, reversible, and compatible with Explorer, while <b>Super Hide</b> stays invisible even when “Show hidden files” is enabled.</p>
+      <div class="callout">Self-contained single-file exe. No .NET runtime, no installer, Windows 7+.</div>
+
+      <h2 id="install">Installation</h2>
+      <p>Download the matching exe from <a href="https://github.com/mrlurix/Umbra/releases/latest">Releases</a>:</p>
+      <ul>
+        <li><b>Umbra-win-x64.exe</b> (~68 MB) — recommended for Windows 10/11 64-bit</li>
+        <li><b>Umbra-win-x86.exe</b> (~63 MB) — universal, works on both 32 and 64-bit</li>
+      </ul>
+      <p>Just double-click to run. No setup. The list is saved next to the exe as <code>items.json</code>.</p>
+
+      <h2 id="quick">Quick start</h2>
+      <ol style="padding-left:18px;color:#888;font-size:13px">
+        <li>Add files: <b>File</b> / <b>Folder</b> or drag &amp; drop from Explorer.</li>
+        <li>Select items (Ctrl+Click for multi-select, Ctrl+A for all).</li>
+        <li>Click <b>Hide</b> or <b>Strong</b> (Super Hide). Use <b>Show</b> to unhide.</li>
+        <li>Remove from list (Delete) does <i>not</i> delete the file — it only removes the entry.</li>
+      </ol>
+
+      <h2 id="hide">Hide / Super Hide / Show</h2>
+      <h3>Standard Hide</h3>
+      <p>Sets <code>FileAttributes.Hidden</code>. Hidden files disappear when Explorer has “Don’t show hidden files”.</p>
+      <h3>Super Hide (Strong)</h3>
+      <p>Sets <code>Hidden + System</code>. Windows hides System files even when “Show hidden files” is on, unless “Hide protected OS files” is disabled — so this is the truly invisible mode. Umbra asks for confirmation before applying it.</p>
+      <h3>Show</h3>
+      <p>Clears both Hidden and System.</p>
+      <div class="callout warn"><b>Protected paths blocked:</b> drive roots (C:\), Windows, System32, SysWOW64, Program Files etc. cannot be hidden or scanned — this prevents bricking the OS.</div>
+
+      <h2 id="scan">Scan</h2>
+      <p><b>Scan</b> lets you pick a folder and Umbra walks it recursively to find already-hidden files/folders and import them. Details:</p>
+      <ul>
+        <li>Skips reparse points / junctions / symlinks (prevents infinite loops).</li>
+        <li>Limited to <code>2000</code> found items and <code>10k</code> visited directories per scan.</li>
+        <li>Handles <code>UnauthorizedAccessException</code> gracefully and skips protected folders.</li>
+        <li>Critical system roots are blocked.</li>
+      </ul>
+
+      <h2 id="search">Search &amp; Statistics</h2>
+      <p>The top stats cards show:</p>
+      <ul>
+        <li><b>Items</b> — total count</li>
+        <li><b>Hidden</b> — how many are currently hidden</li>
+        <li><b>Total Size</b> — sum of file sizes (folders count as 0)</li>
+      </ul>
+      <p>Search filters live by file name or parent path (max 200 chars). The settings panel repeats these stats with counts.</p>
+
+      <h2 id="settings">Settings panel</h2>
+      <p>Click the gear (⚙) to slide the panel:</p>
+      <ul>
+        <li><b>Shortcuts</b> — reference for all hotkeys.</li>
+        <li><b>Statistics</b> — Total / Hidden / Visible.</li>
+        <li><b>Actions</b> — Select All, Clear All (with confirmation), Export List.</li>
+        <li><b>Tips</b> — multi-select, Super Hide explanation, drag &amp; drop, scan usage.</li>
+        <li><b>Save &amp; Load</b> — list auto-saved to <code>items.json</code>.</li>
+        <li><b>Language</b> — English / فارسی toggle (v1.2+ defaults to English).</li>
+        <li><b>About</b> — logo, tagline, version 1.0, method Hidden+System, .NET 8 WPF, “Made with ♥”.</li>
+      </ul>
+
+      <h2 id="persist">Save / Load / Export</h2>
+      <h3>items.json</h3>
+      <p>Stored next to the exe. Validated on load: max <code>5 MB</code> and <code>5000</code> items, each path canonicalized, invalid / duplicate / reparse-point entries skipped. Save is atomic (<code>tmp → move</code>) to avoid corruption.</p>
+      <h3>Export</h3>
+      <p>Creates <code>Umbra_list_yyyyMMdd_HHmmss.txt</code> on Desktop with lines like <code>[H] C:\path</code>. Filename sanitized, path validated to stay under Desktop.</p>
+
+      <h2 id="shortcuts">Shortcuts</h2>
+      <table>
+        <tr><th>Key</th><th>Action</th></tr>
+        <tr><td>Ctrl+A</td><td>Select all</td></tr>
+        <tr><td>Ctrl+H</td><td>Hide</td></tr>
+        <tr><td>Ctrl+Shift+H</td><td>Super Hide</td></tr>
+        <tr><td>Ctrl+U</td><td>Show (unhide)</td></tr>
+        <tr><td>Delete</td><td>Remove from list</td></tr>
+        <tr><td>Ctrl+S</td><td>Save list</td></tr>
+        <tr><td>Ctrl+O</td><td>Load list</td></tr>
+        <tr><td>F5</td><td>Refresh status from disk</td></tr>
+      </table>
+
+      <h2 id="security">Security hardening</h2>
+      <ul>
+        <li>Memory leak fixed: <code>FileItem</code> implements <code>IDisposable</code> and unsubscribes from <code>LanguageChanged</code>.</li>
+        <li>Path validation: blocks device paths (<code>\\?\</code>, <code>\\.\</code>), ADS (<code>file:stream</code>), null bytes, invalid chars, over-long paths, and critical system paths.</li>
+        <li>TOCTOU mitigation: re-canonicalize before <code>SetAttributes</code>, skip reparse points.</li>
+        <li>DoS limits: scan, item count, JSON size, search query length (200), toast length (300).</li>
+        <li>Info disclosure: no stack trace in UI; error log capped at 2 MB and stored in <code>%LocalAppData%\Umbra\Umbra_error.log</code>.</li>
+      </ul>
+
+      <h2 id="build">Build from source</h2>
+      <pre><code>dotnet build -c Release
+# Self-contained single-file (no prerequisites)
+dotnet publish -c Release -r win-x64 -o publish/win-x64
+dotnet publish -c Release -r win-x86 -o publish/win-x86</code></pre>
+      <p><code>AppHidder.csproj</code> already sets <code>PublishSingleFile</code>, <code>PublishSelfContained</code>, <code>IncludeNativeLibrariesForSelfExtract</code>, <code>EnableCompressionInSingleFile</code>. No extra flags needed.</p>
+
+      <h2 id="faq">FAQ</h2>
+      <h3>Does Super Hide encrypt?</h3>
+      <p>No. It only sets attributes. Anyone with “Show protected OS files” can still see them.</p>
+      <h3>Will it work without .NET?</h3>
+      <p>Yes. The published exe is self-contained and runs on Windows 7+ with no install.</p>
+      <h3>Can I hide C:\Windows?</h3>
+      <p>Blocked. Umbra refuses critical system paths to avoid breaking Windows.</p>
+      <h3>Where is the log?</h3>
+      <p><code>%LocalAppData%\Umbra\Umbra_error.log</code> (rotated at 2 MB).</p>
+
+      <footer style="margin-top:40px;border-top:1px solid #1A1A1A;padding-top:16px;color:#444;font-size:11px">
+        © 2026 Umbra — Made by mrlurix • <a href="index.html">Home</a> • <a href="https://github.com/mrlurix/Umbra">GitHub</a>
+      </footer>
+    </main>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="580" viewBox="0 0 920 580" role="img" aria-label="Umbra app screenshot">
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00D4FF"/>
+      <stop offset="60%" stop-color="#A855F7"/>
+      <stop offset="100%" stop-color="#EC4899"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+  <!-- Window outer -->
+  <rect x="0" y="0" width="920" height="580" rx="12" fill="#0A0A0A" stroke="#1A1A1A" stroke-width="1"/>
+  <!-- Title bar -->
+  <rect x="0" y="0" width="920" height="34" rx="12" fill="#0A0A0A"/>
+  <rect x="0" y="22" width="920" height="12" fill="#0A0A0A"/>
+  <line x1="0" y1="34" x2="920" y2="34" stroke="#1A1A1A" stroke-width="1"/>
+  <text x="14" y="23" font-family="Segoe UI, sans-serif" font-size="13">🌘</text>
+  <text x="36" y="22" font-family="Segoe UI, sans-serif" font-size="11" font-weight="700" fill="#00D4FF">UMBRA</text>
+  <text x="880" y="22" font-family="Segoe MDL2 Assets, Segoe UI, sans-serif" font-size="10" fill="#666"></text>
+  <text x="846" y="22" font-family="Segoe MDL2 Assets, Segoe UI, sans-serif" font-size="10" fill="#666"></text>
+  <!-- Content margin 24 -->
+  <!-- Header -->
+  <text x="24" y="58" font-family="Segoe UI, sans-serif" font-size="11" fill="#666">Umbra — File &amp; Folder Manager</text>
+  <rect x="24" y="66" width="872" height="2" rx="1" fill="url(#grad)"/>
+  <!-- Stats -->
+  <g>
+    <!-- Card 1 -->
+    <rect x="24" y="78" width="280" height="58" rx="7" fill="#111" stroke="#1A1A1A" stroke-width="1"/>
+    <rect x="38" y="92" width="32" height="32" rx="7" fill="#20A855F7"/>
+    <text x="54" y="112" text-anchor="middle" font-size="14">📦</text>
+    <text x="78" y="104" font-family="Segoe UI, sans-serif" font-size="18" font-weight="700" fill="#A855F7">12</text>
+    <text x="78" y="118" font-family="Segoe UI, sans-serif" font-size="9" fill="#666">Items</text>
+    <!-- Card 2 -->
+    <rect x="314" y="78" width="280" height="58" rx="7" fill="#111" stroke="#1A1A1A" stroke-width="1"/>
+    <rect x="328" y="92" width="32" height="32" rx="7" fill="#2000D4FF"/>
+    <text x="344" y="112" text-anchor="middle" font-size="14">🙈</text>
+    <text x="368" y="104" font-family="Segoe UI, sans-serif" font-size="18" font-weight="700" fill="#00D4FF">3</text>
+    <text x="368" y="118" font-family="Segoe UI, sans-serif" font-size="9" fill="#666">Hidden</text>
+    <!-- Card 3 -->
+    <rect x="604" y="78" width="272" height="58" rx="7" fill="#111" stroke="#1A1A1A" stroke-width="1"/>
+    <rect x="618" y="92" width="32" height="32" rx="7" fill="#20EF4444"/>
+    <text x="634" y="112" text-anchor="middle" font-size="14">🗑</text>
+    <text x="658" y="104" font-family="Segoe UI, sans-serif" font-size="18" font-weight="700" fill="#EF4444">2.4 MB</text>
+    <text x="658" y="118" font-family="Segoe UI, sans-serif" font-size="9" fill="#666">Total Size</text>
+    <!-- Settings gear -->
+    <rect x="886" y="92" width="34" height="34" rx="17" fill="#111" stroke="#1A1A1A" stroke-width="1"/>
+    <text x="903" y="114" text-anchor="middle" font-size="15" fill="#666">⚙</text>
+  </g>
+  <!-- Toolbar -->
+  <g font-family="Segoe UI, sans-serif" font-size="10" font-weight="700">
+    <rect x="24" y="146" width="68" height="30" rx="7" fill="#111" stroke="#00D4FF" stroke-width="1.2"/>
+    <text x="58" y="165" text-anchor="middle" fill="#00D4FF">➕ File</text>
+    <rect x="96" y="146" width="78" height="30" rx="7" fill="#111" stroke="#00D4FF" stroke-width="1.2"/>
+    <text x="135" y="165" text-anchor="middle" fill="#00D4FF">📁 Folder</text>
+    <rect x="178" y="146" width="68" height="30" rx="7" fill="#111" stroke="#6366F1" stroke-width="1.2"/>
+    <text x="212" y="165" text-anchor="middle" fill="#6366F1">🔍 Scan</text>
+    <rect x="250" y="146" width="68" height="30" rx="7" fill="#111" stroke="#22C55E" stroke-width="1.2"/>
+    <text x="284" y="165" text-anchor="middle" fill="#22C55E">🙈 Hide</text>
+    <rect x="322" y="146" width="74" height="30" rx="7" fill="#111" stroke="#F97316" stroke-width="1.2"/>
+    <text x="359" y="165" text-anchor="middle" fill="#F97316">🔒 Strong</text>
+    <rect x="400" y="146" width="68" height="30" rx="7" fill="#111" stroke="#EF4444" stroke-width="1.2"/>
+    <text x="434" y="165" text-anchor="middle" fill="#EF4444">👁 Show</text>
+    <rect x="472" y="146" width="74" height="30" rx="7" fill="#111" stroke="#A855F7" stroke-width="1.2"/>
+    <text x="509" y="165" text-anchor="middle" fill="#A855F7">✖ Remove</text>
+    <rect x="550" y="146" width="74" height="30" rx="7" fill="#111" stroke="#14B8A6" stroke-width="1.2"/>
+    <text x="587" y="165" text-anchor="middle" fill="#14B8A6">🔄 Refresh</text>
+  </g>
+  <!-- Search -->
+  <rect x="24" y="186" width="872" height="32" rx="6" fill="#0D0D0D" stroke="#1A1A1A" stroke-width="1"/>
+  <text x="36" y="206" font-family="Segoe UI, sans-serif" font-size="11" fill="#444">🔍 Search files or folders...</text>
+  <!-- List -->
+  <rect x="24" y="228" width="872" height="298" rx="7" fill="#0D0D0D" stroke="#1A1A1A" stroke-width="1"/>
+  <!-- Item 1 -->
+  <rect x="34" y="242" width="852" height="44" rx="7" fill="#111" stroke="#00D4FF" stroke-width="1"/>
+  <rect x="44" y="252" width="18" height="18" rx="3" fill="#1A1A1A" stroke="#333" stroke-width="1"/>
+  <text x="53" y="265" text-anchor="middle" font-size="10" fill="#00D4FF">✓</text>
+  <rect x="70" y="248" width="30" height="30" rx="6" fill="#3022C55E"/>
+  <text x="85" y="267" text-anchor="middle" font-size="13">📄</text>
+  <text x="110" y="262" font-family="Segoe UI, sans-serif" font-size="11" font-weight="600" fill="#CCC">Project-Report.pdf</text>
+  <text x="110" y="276" font-family="Segoe UI, sans-serif" font-size="8.5" fill="#555">C:\Users\mrlurix\Documents</text>
+  <text x="720" y="268" font-family="Segoe UI, sans-serif" font-size="10" fill="#555">1.2 MB</text>
+  <rect x="770" y="252" width="72" height="18" rx="4" fill="#2022C55E"/>
+  <text x="806" y="264" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" fill="#22C55E">📄 Visible</text>
+  <!-- Item 2 hidden -->
+  <rect x="34" y="294" width="852" height="44" rx="7" fill="#111" stroke="transparent" stroke-width="1"/>
+  <rect x="44" y="304" width="18" height="18" rx="3" fill="#00D4FF"/>
+  <text x="53" y="317" text-anchor="middle" font-size="10" fill="#000">✓</text>
+  <rect x="70" y="300" width="30" height="30" rx="6" fill="#30EF4444"/>
+  <text x="85" y="319" text-anchor="middle" font-size="13">📁</text>
+  <text x="110" y="314" font-family="Segoe UI, sans-serif" font-size="11" font-weight="600" fill="#CCC">Secret-Photos</text>
+  <text x="110" y="328" font-family="Segoe UI, sans-serif" font-size="8.5" fill="#555">D:\Private\Photos</text>
+  <text x="770" y="304" width="72" height="18" rx="4" fill="#20EF4444"/>
+  <rect x="770" y="304" width="72" height="18" rx="4" fill="#20EF4444"/>
+  <text x="806" y="316" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" fill="#EF4444">🙈 Hidden</text>
+  <!-- Item 3 -->
+  <rect x="34" y="346" width="852" height="44" rx="7" fill="#111" stroke="transparent" stroke-width="1"/>
+  <rect x="44" y="356" width="18" height="18" rx="3" fill="#1A1A1A" stroke="#333" stroke-width="1"/>
+  <rect x="70" y="352" width="30" height="30" rx="6" fill="#3022C55E"/>
+  <text x="85" y="371" text-anchor="middle" font-size="13">📄</text>
+  <text x="110" y="366" font-family="Segoe UI, sans-serif" font-size="11" font-weight="600" fill="#CCC">Notes.txt</text>
+  <text x="110" y="380" font-family="Segoe UI, sans-serif" font-size="8.5" fill="#555">C:\Users\mrlurix\Desktop</text>
+  <text x="720" y="372" font-family="Segoe UI, sans-serif" font-size="10" fill="#555">4.3 KB</text>
+  <rect x="770" y="356" width="72" height="18" rx="4" fill="#2022C55E"/>
+  <text x="806" y="368" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="8" font-weight="700" fill="#22C55E">📄 Visible</text>
+  <!-- Status -->
+  <text x="24" y="546" font-family="Segoe UI, sans-serif" font-size="9" fill="#555">✅ Ready</text>
+  <text x="872" y="546" font-family="Segoe UI, sans-serif" font-size="9" fill="#444" text-anchor="end">3 items</text>
+  <!-- Bottom credit -->
+  <line x1="0" y1="558" x2="920" y2="558" stroke="#1A1A1A" stroke-width="1"/>
+  <text x="460" y="574" font-family="Segoe UI, sans-serif" font-size="8.5" fill="#00D4FF" opacity="0.7" text-anchor="middle">Made by mrlurix</text>
+</svg>
