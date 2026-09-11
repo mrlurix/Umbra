@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Installation — Umbra Docs</title>
+<link rel="icon" href="assets/logo.svg">
+<link rel="stylesheet" href="assets/style.css?v=3">
+</head>
+<body>
+<header class="topbar">
+  <button id="nav-toggle" aria-label="Menu">☰</button>
+  <a class="brand" href="index.html"><img src="assets/logo.svg" alt="Umbra"><b>UMB<span>RA</span></b></a>
+  <span class="ver">Docs</span>
+  <span class="spacer"></span>
+  <a class="gh" href="https://github.com/mrlurix/Umbra" target="_blank" rel="noopener">GitHub ↗</a>
+</header>
+<div class="layout">
+<nav class="sidebar" id="sidebar">
+  <input id="nav-search" type="search" placeholder="Search docs…">
+  <div class="nav-group">Getting Started</div>
+  <a href="index.html">← Home</a>
+  <a href="installation.html">Installation</a>
+  <div class="nav-group">Features</div>
+  <a href="docs.html#hide">Hide &amp; Super Hide</a>
+  <a href="docs.html#scan">Scan</a>
+  <a href="docs.html#search">Search &amp; Stats</a>
+  <a href="docs.html#settings">Settings Panel</a>
+  <div class="nav-group">Reference</div>
+  <a href="docs.html#shortcuts">Shortcuts</a>
+  <a href="docs.html#security">Security</a>
+  <a href="docs.html#build">Build from Source</a>
+  <a href="docs.html#faq">FAQ</a>
+</nav>
+<main class="content">
+
+<h1><span class="z">U</span>MBRA Installation</h1>
+<p class="subtitle">From download to hiding in 10 seconds — no prerequisites.</p>
+
+<h2 id="requirements">Requirements</h2>
+<ul>
+  <li>Windows 7+ / 10 / 11 (x64 or x86)</li>
+  <li>No extra software — Umbra is self-contained single-file</li>
+  <li>Optional: admin rights only for hiding System-protected folders (normal hide works without)</li>
+</ul>
+
+<h2 id="download">Download</h2>
+<p>Grab the latest exe from <a href="https://github.com/mrlurix/Umbra/releases/latest">Releases</a>:</p>
+<div class="cards">
+  <a class="card" href="https://github.com/mrlurix/Umbra/releases/latest"><b>Umbra-win-x64.exe — ~68 MB</b><span>Recommended for modern Windows 10/11 64-bit</span></a>
+  <a class="card" href="https://github.com/mrlurix/Umbra/releases/latest"><b>Umbra-win-x86.exe — ~63 MB</b><span>Universal — works on 32 &amp; 64-bit</span></a>
+</div>
+<pre>curl -L https://github.com/mrlurix/Umbra/releases/latest/download/Umbra-win-x64.exe -o Umbra.exe
+# or for 32-bit
+curl -L https://github.com/mrlurix/Umbra/releases/latest/download/Umbra-win-x86.exe -o Umbra.exe</pre>
+<div class="callout info">Both are compressed self-contained builds. No .NET install, no installer — just double-click.</div>
+
+<h2 id="quick-start">Quick start</h2>
+<ol>
+  <li>Double-click <code>Umbra.exe</code></li>
+  <li>Add files: <b>File</b> / <b>Folder</b> or drag &amp; drop from Explorer</li>
+  <li>Select items (Ctrl+Click for multi, Ctrl+A for all)</li>
+  <li>Click <b>Hide</b> or <b>Strong</b> (Super Hide = Hidden+System)</li>
+  <li>Use <b>Show</b> to restore</li>
+</ol>
+
+<h2 id="what-happens">What happens on disk</h2>
+<ul>
+  <li>List auto-saved next to exe as <code>items.json</code> (max 5 MB / 5000 items, atomic write)</li>
+  <li>Log (if any) goes to <code>%LocalAppData%\Umbra\Umbra_error.log</code> (2 MB rotated)</li>
+  <li>Hiding sets NTFS attributes — no encryption, instant and reversible</li>
+</ul>
+
+<h2 id="build-from-source">Build from source</h2>
+<pre>dotnet build -c Release
+# self-contained single-file
+dotnet publish -c Release -r win-x64 -o publish/win-x64
+dotnet publish -c Release -r win-x86 -o publish/win-x86</pre>
+<div class="callout ok">AppHidder.csproj already sets PublishSingleFile, PublishSelfContained, IncludeNativeLibrariesForSelfExtract and EnableCompressionInSingleFile.</div>
+
+<h2 id="uninstall">Uninstall</h2>
+<p>Just delete <code>Umbra.exe</code> and <code>items.json</code>. No registry, no services.</p>
+<pre>del Umbra.exe
+del items.json</pre>
+
+</main>
+</div>
+<footer>Umbra · MIT License · <a href="https://github.com/mrlurix/Umbra">github.com/mrlurix/Umbra</a></footer>
+<script src="assets/docs.js?v=3"></script>
+</body>
+</html>
