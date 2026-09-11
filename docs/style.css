@@ -2,10 +2,10 @@
   --bg: #06060a;
   --card: #10101a;
   --border: #22222f;
-  --border-red: rgba(255, 39, 64, .28);
-  --red: #ff2740;
-  --red-dark: #8f0f1e;
-  --red-glow: rgba(255, 39, 64, .35);
+  --border-red: rgba(0, 212, 255, .28);
+  --red: #00D4FF;
+  --red-dark: #0A5A6E;
+  --red-glow: rgba(0, 212, 255, .35);
   --text: #ececf2;
   --muted: #8b8c9e;
   --green: #2ecc71;
@@ -222,7 +222,7 @@ tr:hover td { background: var(--card); }
   font-size: 15px;
 }
 .btn.primary { background: var(--red); color: #fff !important; box-shadow: 0 0 22px var(--red-glow); }
-.btn.primary:hover { background: #ff4056; }
+.btn.primary:hover { background: #33DDFF; }
 .btn.ghost { border: 1px solid var(--border); color: var(--text) !important; }
 .btn.ghost:hover { border-color: var(--red); }
 .stats { display: flex; gap: 26px; justify-content: center; margin: 26px 0 6px; flex-wrap: wrap; }
@@ -377,11 +377,11 @@ footer a { color: var(--red); text-decoration: none; }
   cursor: pointer;
   text-decoration: none;
 }
-.sp-item.sel, .sp-item:hover { background: rgba(255, 39, 64, .1); }
+.sp-item.sel, .sp-item:hover { background: rgba(0, 212, 255, .1); }
 .sp-item .sp-sec { color: var(--text); font-size: 14.5px; }
 .sp-item .sp-page { color: var(--red); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
 .sp-item .sp-snip { color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sp-item mark { background: rgba(255, 39, 64, .32); color: #fff; border-radius: 3px; padding: 0 1px; }
+.sp-item mark { background: rgba(0, 212, 255, .32); color: #fff; border-radius: 3px; padding: 0 1px; }
 .sp-empty { color: var(--muted); text-align: center; padding: 26px; font-size: 14px; }
 .sp-foot {
   display: flex;

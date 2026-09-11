@@ -101,7 +101,7 @@ document.querySelectorAll("pre").forEach(function (pre) {
   overlay.hidden = true;
   overlay.innerHTML =
     "<div class='sp-modal' role='dialog' aria-modal='true' aria-label='Search documentation'>" +
-    "<div class='sp-input-row'><svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='#ff2740' stroke-width='2'><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg>" +
+    "<div class='sp-input-row'><svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='#00D4FF' stroke-width='2'><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg>" +
     "<input id='sp-input' type='text' placeholder='Search documentation…' autocomplete='off' spellcheck='false'></div>" +
     "<div class='sp-results' id='sp-results'></div>" +
     "<div class='sp-foot'><span><kbd>↑↓</kbd>navigate</span><span><kbd>↵</kbd>open</span><span><kbd>esc</kbd>close</span></div></div>";
